@@ -1,16 +1,25 @@
+import { join } from 'path';
 import { Stack, StackProps } from 'aws-cdk-lib';
+import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { DockerImageCode, DockerImageFunction } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class LambdaDockerTsStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const dockerfile = join(__dirname, './lambda-fns');
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'LambdaDockerTsQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const lambda = new DockerImageFunction(this, 'LambdaDockerFunction', {
+      code: DockerImageCode.fromImageAsset(dockerfile),
+    });
+
+    const gtw = new RestApi(this, 'LambdaDockerGateway', {
+      restApiName: 'lambda-docker-apigateway',
+    });
+
+    const integration = new LambdaIntegration(lambda);
+    const root = gtw.root;
+    root.addMethod('POST', integration);
   }
 }
