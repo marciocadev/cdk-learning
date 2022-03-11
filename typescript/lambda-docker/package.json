@@ -1,8 +1,8 @@
 {
-  "name": "lambda-docker-ts",
+  "name": "lambda-docker",
   "version": "0.1.0",
   "bin": {
-    "lambda-docker-ts": "bin/lambda-docker-ts.js"
+    "lambda-docker": "bin/lambda-docker.js"
   },
   "scripts": {
     "build": "tsc",
